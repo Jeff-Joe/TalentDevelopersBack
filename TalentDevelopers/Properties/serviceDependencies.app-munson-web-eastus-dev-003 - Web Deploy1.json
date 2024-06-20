@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/app-munson-web-eastus-dev-003/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsMunsonSqlDb_DA347371BB",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sqlserver-munson-003/databases/sqldb-munson-001",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:Munson:SqlDb",
+      "dynamicId": null
+    }
+  }
+}
