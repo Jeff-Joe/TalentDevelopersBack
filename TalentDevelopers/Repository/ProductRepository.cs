@@ -1,4 +1,5 @@
-﻿using TalentDevelopers.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using TalentDevelopers.Interfaces;
 using TalentDevelopers.Models;
 
 namespace TalentDevelopers.Repository
@@ -11,10 +12,10 @@ namespace TalentDevelopers.Repository
         {
             _context = context;
         }
-        public bool CreateProduct(Product product)
+        public async Task<bool> CreateProduct(Product product)
         {
-            _context.Add(product);
-            return Save();
+            await _context.AddAsync(product);
+            return await Save();
         }
 
         public bool ProductExists(int id)
@@ -22,32 +23,32 @@ namespace TalentDevelopers.Repository
             return _context.Products.Any(x => x.Id == id);
         }
 
-        public bool DeleteProduct(Product product)
+        public async Task<bool> DeleteProduct(Product product)
         {
             _context.Remove(product);
-            return Save();
+            return await Save();
         }
 
-        public Product GetProduct(int id)
+        public async Task<Product> GetProduct(int id)
         {
-            return _context.Products.Where(x => x.Id == id).SingleOrDefault();
+            return await _context.Products.Where(x => x.Id == id).SingleOrDefaultAsync();
         }
 
-        public ICollection<Product> GetProducts()
+        public async Task<ICollection<Product>> GetProducts()
         {
-            return _context.Products.ToList();
+            return await _context.Products.ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateProduct(Product product)
+        public async Task<bool> UpdateProduct(Product product)
         {
             _context.Update(product);
-            return Save();
+            return await Save();
         }
     }
 }

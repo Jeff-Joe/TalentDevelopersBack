@@ -4,12 +4,12 @@ namespace TalentDevelopers.Interfaces
 {
     public interface ISalesRepository
     {
-        ICollection<Sales> GetSales();
-        Sales GetSale(int id);
+        Task<ICollection<Sales>> GetSales();
+        Task<Sales> GetSale(int id);
         bool SalesExists(int id);
-        bool CreateSales(Sales sales);
-        bool UpdateSales(Sales sales);
-        bool DeleteSales(Sales sales);
-        bool Save();
+        Task<bool> CreateSales(Sales sales);
+        Task<bool> UpdateSales(Sales sales);
+        Task<bool> DeleteSales(Sales sales);
+        Task<bool> Save();
     }
 }

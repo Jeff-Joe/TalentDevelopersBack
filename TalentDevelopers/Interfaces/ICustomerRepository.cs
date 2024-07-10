@@ -4,12 +4,12 @@ namespace TalentDevelopers.Interfaces
 {
     public interface ICustomerRepository
     {
-        ICollection<Customer> GetCustomers();
-        Customer GetCustomer(int id);
+        Task<ICollection<Customer>> GetCustomers();
+        Task<Customer> GetCustomer(int id);
         bool CustomerExists(int id);
-        bool CreateCustomer(Customer customer);
-        bool UpdateCustomer(Customer customer);
-        bool DeleteCustomer(Customer customer);
-        bool Save();
+        Task<bool> CreateCustomer(Customer customer);
+        Task<bool> UpdateCustomer(Customer customer);
+        Task<bool> DeleteCustomer(Customer customer);
+        Task<bool> Save();
     }
 }

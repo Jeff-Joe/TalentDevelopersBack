@@ -13,10 +13,10 @@ namespace TalentDevelopers.Repository
         {
             _context = context;
         }
-        public bool CreateSales(Sales sales)
+        public async Task<bool> CreateSales(Sales sales)
         {
-            _context.Add(sales);
-            return Save();
+            await _context.AddAsync(sales);
+            return await Save();
         }
 
         public bool SalesExists(int id)
@@ -24,32 +24,32 @@ namespace TalentDevelopers.Repository
             return _context.SalesTable.Any(x => x.Id == id);
         }
 
-        public bool DeleteSales(Sales sales)
+        public async Task<bool> DeleteSales(Sales sales)
         {
             _context.Remove(sales);
-            return Save();
+            return await Save();
         }
 
-        public Sales GetSale(int id)
+        public async Task<Sales> GetSale(int id)
         {
-            return _context.SalesTable.Where(x => x.Id == id).SingleOrDefault();
+            return await _context.SalesTable.Where(x => x.Id == id).SingleOrDefaultAsync();
         }
 
-        public ICollection<Sales> GetSales()
+        public async Task<ICollection<Sales>> GetSales()
         {
-            return _context.SalesTable.Include(x => x.Customer).Include(x => x.Product).Include(x => x.Store).ToList();
+            return await _context.SalesTable.Include(x => x.Customer).Include(x => x.Product).Include(x => x.Store).ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateSales(Sales sales)
+        public async Task<bool> UpdateSales(Sales sales)
         {
             _context.Update(sales);
-            return Save();
+            return await Save();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TalentDevelopers.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using TalentDevelopers.Interfaces;
 using TalentDevelopers.Models;
 
 namespace TalentDevelopers.Repository
@@ -11,10 +12,10 @@ namespace TalentDevelopers.Repository
         {
             _context = context;
         }
-        public bool CreateStore(Store store)
+        public async Task<bool> CreateStore(Store store)
         {
-            _context.Add(store);
-            return Save();
+            await _context.AddAsync(store);
+            return await Save();
         }
 
         public bool StoreExists(int id)
@@ -22,32 +23,32 @@ namespace TalentDevelopers.Repository
             return _context.Stores.Any(x => x.Id == id);
         }
 
-        public bool DeleteStore(Store store)
+        public async Task<bool> DeleteStore(Store store)
         {
             _context.Remove(store);
-            return Save();
+            return await Save();
         }
 
-        public Store GetStore(int id)
+        public async Task<Store> GetStore(int id)
         {
-            return _context.Stores.Where(x => x.Id == id).SingleOrDefault();
+            return await _context.Stores.Where(x => x.Id == id).SingleOrDefaultAsync();
         }
 
-        public ICollection<Store> GetStores()
+        public async Task<ICollection<Store>> GetStores()
         {
-            return _context.Stores.ToList();
+            return await _context.Stores.ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateStore(Store store)
+        public async Task<bool> UpdateStore(Store store)
         {
             _context.Update(store);
-            return Save();
+            return await Save();
         }
     }
 }

@@ -6,7 +6,7 @@ using TalentDevelopers.Models;
 using TalentDevelopers.Repository;
 
 // CORS policy variable
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +16,10 @@ builder.Services.AddControllersWithViews();
 // CORS service
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
+    options.AddPolicy("AllowAll",
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:5173")
+                          policy.AllowAnyOrigin()
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                       });
@@ -74,7 +74,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Add CORS middleware
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 

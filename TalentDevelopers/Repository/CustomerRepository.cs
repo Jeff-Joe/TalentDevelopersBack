@@ -1,4 +1,5 @@
-﻿using TalentDevelopers.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using TalentDevelopers.Interfaces;
 using TalentDevelopers.Models;
 
 namespace TalentDevelopers.Repository
@@ -11,10 +12,10 @@ namespace TalentDevelopers.Repository
         {
             _context = context;
         }
-        public bool CreateCustomer(Customer customer)
+        public async Task<bool> CreateCustomer(Customer customer)
         {
-            _context.Add(customer);
-            return Save();
+            await _context.AddAsync(customer);
+            return await Save();
         }
 
         public bool CustomerExists(int id)
@@ -22,32 +23,32 @@ namespace TalentDevelopers.Repository
             return _context.Customers.Any(x => x.Id == id);
         }
 
-        public bool DeleteCustomer(Customer customer)
+        public async Task<bool> DeleteCustomer(Customer customer)
         {
             _context.Remove(customer);
-            return Save();
+            return await Save();
         }
 
-        public Customer GetCustomer(int id)
+        public async Task<Customer> GetCustomer(int id)
         {
-            return _context.Customers.Where(x => x.Id == id).FirstOrDefault();
+            return await _context.Customers.Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public ICollection<Customer> GetCustomers()
+        public async Task<ICollection<Customer>> GetCustomers()
         {
-            return _context.Customers.ToList();
+            return await _context.Customers.ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
-        public bool UpdateCustomer(Customer customer)
+        public async Task<bool> UpdateCustomer(Customer customer)
         {
             _context.Update(customer);
-            return Save();
+            return await Save();
         }
     }
 }
