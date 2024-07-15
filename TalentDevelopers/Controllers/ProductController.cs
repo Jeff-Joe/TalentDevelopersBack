@@ -54,16 +54,17 @@ namespace TalentDevelopers.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateProduct([FromBody] ProductViewModel productCreate)
+        public async Task<IActionResult> CreateProductAsync([FromBody] ProductViewModel productCreate)
         {
             if (productCreate == null)
                 return BadRequest(ModelState);
 
-            var products = _productRepository.GetProducts()
+            var products = await _productRepository.GetProducts();
+            var filteredProduct = products
                 .Where(x => x.Name.Trim().ToUpper() == productCreate.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
-            if (products != null)
+            if (filteredProduct != null)
             {
                 ModelState.AddModelError("", "Product already exists");
             }
@@ -73,7 +74,7 @@ namespace TalentDevelopers.Controllers
 
             var productMap = _mapper.Map<Product>(productCreate);
 
-            if (!_productRepository.CreateProduct(productMap))
+            if (!(await _productRepository.CreateProduct(productMap)))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
@@ -86,7 +87,7 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UpdateProduct(int productId, [FromBody] ProductViewModel updatedProduct)
+        public async Task<IActionResult> UpdateProductAsync(int productId, [FromBody] ProductViewModel updatedProduct)
         {
             if (updatedProduct == null)
                 return BadRequest(ModelState);
@@ -99,7 +100,7 @@ namespace TalentDevelopers.Controllers
 
             var productMap = _mapper.Map<Product>(updatedProduct);
 
-            if (!_productRepository.UpdateProduct(productMap))
+            if (!(await _productRepository.UpdateProduct(productMap)))
             {
                 ModelState.AddModelError("", "Something went wrong updating product");
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
@@ -112,17 +113,17 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteProduct(int productId)
+        public async Task<IActionResult> DeleteProductAsync(int productId)
         {
             if (!_productRepository.ProductExists(productId))
                 return NotFound();
 
-            var productToDelete = _productRepository.GetProduct(productId);
+            var productToDelete = await _productRepository.GetProduct(productId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_productRepository.DeleteProduct(productToDelete))
+            if (!(await _productRepository.DeleteProduct(productToDelete)))
             {
                 ModelState.AddModelError("", "Something went wrong deleting product");
             }

@@ -54,12 +54,13 @@ namespace TalentDevelopers.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateStore([FromBody] StoreViewModel storeCreate)
+        public async Task<IActionResult> CreateStoreAsync([FromBody] StoreViewModel storeCreate)
         {
             if (storeCreate == null)
                 return BadRequest(ModelState);
 
-            var stores = _storeRepository.GetStores()
+            var stores = await _storeRepository.GetStores();
+            var filteredStore = stores
                 .Where(x => x.Name.Trim().ToUpper() == storeCreate.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
@@ -73,7 +74,7 @@ namespace TalentDevelopers.Controllers
 
             var storeMap = _mapper.Map<Store>(storeCreate);
 
-            if (!_storeRepository.CreateStore(storeMap))
+            if (!(await _storeRepository.CreateStore(storeMap)))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
@@ -86,7 +87,7 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UpdateStore(int storeId, [FromBody] StoreViewModel updatedStore)
+        public async Task<IActionResult> UpdateStoreAsync(int storeId, [FromBody] StoreViewModel updatedStore)
         {
             if (updatedStore == null)
                 return BadRequest(ModelState);
@@ -99,7 +100,7 @@ namespace TalentDevelopers.Controllers
 
             var storeMap = _mapper.Map<Store>(updatedStore);
 
-            if (!_storeRepository.UpdateStore(storeMap))
+            if (!(await _storeRepository.UpdateStore(storeMap)))
             {
                 ModelState.AddModelError("", "Something went wrong updating store");
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
@@ -112,17 +113,17 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteStore(int storeId)
+        public async Task<IActionResult> DeleteStoreAsync(int storeId)
         {
             if (!_storeRepository.StoreExists(storeId))
                 return NotFound();
 
-            var storeToDelete = _storeRepository.GetStore(storeId);
+            var storeToDelete = await _storeRepository.GetStore(storeId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_storeRepository.DeleteStore(storeToDelete))
+            if (!(await _storeRepository.DeleteStore(storeToDelete)))
             {
                 ModelState.AddModelError("", "Something went wrong deleting store");
             }

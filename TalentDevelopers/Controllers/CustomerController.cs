@@ -54,16 +54,17 @@ namespace TalentDevelopers.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateCustomer([FromBody] CustomerViewModel customerCreate)
+        public async Task<IActionResult> CreateCustomerAsync([FromBody] CustomerViewModel customerCreate)
         {
             if (customerCreate == null)
                 return BadRequest(ModelState);
 
-            var customers = _customerRepository.GetCustomers()
+            var customers = await _customerRepository.GetCustomers();
+            var filteredCustomer = customers
                 .Where(x => x.Name.Trim().ToUpper() == customerCreate.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
-            if(customers != null)
+            if(filteredCustomer != null)
             {
                 ModelState.AddModelError("", "Customer already exists");
             }
@@ -73,7 +74,7 @@ namespace TalentDevelopers.Controllers
 
             var customerMap = _mapper.Map<Customer>(customerCreate);
 
-            if(!_customerRepository.CreateCustomer(customerMap))
+            if(!(await _customerRepository.CreateCustomer(customerMap)))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
@@ -86,7 +87,7 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UpdateCustomer(int customerId, [FromBody] CustomerViewModel updatedCustomer)
+        public async Task<IActionResult> UpdateCustomerAsync(int customerId, [FromBody] CustomerViewModel updatedCustomer)
         {
             if(updatedCustomer == null)
                 return BadRequest(ModelState);
@@ -99,7 +100,7 @@ namespace TalentDevelopers.Controllers
 
             var customerMap = _mapper.Map<Customer>(updatedCustomer);
 
-            if(!_customerRepository.UpdateCustomer(customerMap))
+            if(!(await _customerRepository.UpdateCustomer(customerMap)))
             {
                 ModelState.AddModelError("", "Something went wrong updating customer");
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
@@ -112,17 +113,17 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteCustomer(int customerId)
+        public async Task<IActionResult> DeleteCustomerAsync(int customerId)
         {
             if (!_customerRepository.CustomerExists(customerId))
                 return NotFound();
 
-            var customerToDelete = _customerRepository.GetCustomer(customerId);
+            var customerToDelete = await _customerRepository.GetCustomer(customerId);
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if(!_customerRepository.DeleteCustomer(customerToDelete))
+            if(!(await _customerRepository.DeleteCustomer(customerToDelete)))
             {
                 ModelState.AddModelError("", "Something went wrong deleting customer");
             }

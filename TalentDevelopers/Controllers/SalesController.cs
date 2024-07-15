@@ -54,7 +54,7 @@ namespace TalentDevelopers.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateSales([FromBody] SalesViewModelPost salesCreate)
+        public async Task<IActionResult> CreateSalesAsync([FromBody] SalesViewModelPost salesCreate)
         {
             if (salesCreate == null)
                 return BadRequest(ModelState);
@@ -65,7 +65,7 @@ namespace TalentDevelopers.Controllers
 
             var salesMap = _mapper.Map<Sales>(salesCreate);
 
-            if (!_salesRepository.CreateSales(salesMap))
+            if (!(await _salesRepository.CreateSales(salesMap)))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
@@ -78,7 +78,7 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UpdateSales(int salesId, [FromBody] SalesViewModelPost updatedSales)
+        public async Task<IActionResult> UpdateSalesAsync(int salesId, [FromBody] SalesViewModelPost updatedSales)
         {
             if (updatedSales == null)
                 return BadRequest(ModelState);
@@ -91,7 +91,7 @@ namespace TalentDevelopers.Controllers
 
             var salesMap = _mapper.Map<Sales>(updatedSales);
 
-            if (!_salesRepository.UpdateSales(salesMap))
+            if (!(await _salesRepository.UpdateSales(salesMap)))
             {
                 ModelState.AddModelError("", "Something went wrong updating sale");
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
@@ -104,17 +104,17 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteSales(int salesId)
+        public async Task<IActionResult> DeleteSalesAsync(int salesId)
         {
             if (!_salesRepository.SalesExists(salesId))
                 return NotFound();
 
-            var saleToDelete = _salesRepository.GetSale(salesId);
+            var saleToDelete = await _salesRepository.GetSale(salesId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (!_salesRepository.DeleteSales(saleToDelete))
+            if (!(await _salesRepository.DeleteSales(saleToDelete)))
             {
                 ModelState.AddModelError("", "Something went wrong deleting sale");
             }
