@@ -28,7 +28,9 @@ namespace TalentDevelopers.Controllers
             var products = _mapper.Map<List<ProductViewModel>>(_productRepository.GetProducts());
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             return Ok(products);
         }
@@ -41,12 +43,16 @@ namespace TalentDevelopers.Controllers
         public IActionResult GetProduct(int productId)
         {
             if (!_productRepository.ProductExists(productId))
+            {
                 return NotFound();
+            }
 
             var product = _mapper.Map<ProductViewModel>(_productRepository.GetProduct(productId));
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             return Ok(product);
         }
@@ -57,7 +63,9 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> CreateProductAsync([FromBody] ProductViewModel productCreate)
         {
             if (productCreate == null)
+            {
                 return BadRequest(ModelState);
+            }
 
             var products = await _productRepository.GetProducts();
             var filteredProduct = products
@@ -70,7 +78,9 @@ namespace TalentDevelopers.Controllers
             }
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var productMap = _mapper.Map<Product>(productCreate);
 
@@ -90,13 +100,19 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> UpdateProductAsync(int productId, [FromBody] ProductViewModel updatedProduct)
         {
             if (updatedProduct == null)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (productId != updatedProduct.Id)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!_productRepository.ProductExists(productId))
+            {
                 return NotFound();
+            }
 
             var productMap = _mapper.Map<Product>(updatedProduct);
 
@@ -116,12 +132,16 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> DeleteProductAsync(int productId)
         {
             if (!_productRepository.ProductExists(productId))
+            {
                 return NotFound();
+            }
 
             var productToDelete = await _productRepository.GetProduct(productId);
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!(await _productRepository.DeleteProduct(productToDelete)))
             {

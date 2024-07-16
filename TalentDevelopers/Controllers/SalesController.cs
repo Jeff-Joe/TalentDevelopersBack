@@ -28,7 +28,9 @@ namespace TalentDevelopers.Controllers
             var saless = _mapper.Map<List<SalesViewModelGet>>(_salesRepository.GetSales());
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             return Ok(saless);
         }
@@ -41,12 +43,16 @@ namespace TalentDevelopers.Controllers
         public IActionResult GetSale(int salesId)
         {
             if (!_salesRepository.SalesExists(salesId))
+            {
                 return NotFound();
+            }
 
             var sales = _mapper.Map<SalesViewModelGet>(_salesRepository.GetSale(salesId));
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             return Ok(sales);
         }
@@ -57,11 +63,15 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> CreateSalesAsync([FromBody] SalesViewModelPost salesCreate)
         {
             if (salesCreate == null)
+            {
                 return BadRequest(ModelState);
+            }
 
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var salesMap = _mapper.Map<Sales>(salesCreate);
 
@@ -81,13 +91,19 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> UpdateSalesAsync(int salesId, [FromBody] SalesViewModelPost updatedSales)
         {
             if (updatedSales == null)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (salesId != updatedSales.Id)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!_salesRepository.SalesExists(salesId))
+            {
                 return NotFound();
+            }
 
             var salesMap = _mapper.Map<Sales>(updatedSales);
 
@@ -107,12 +123,16 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> DeleteSalesAsync(int salesId)
         {
             if (!_salesRepository.SalesExists(salesId))
+            {
                 return NotFound();
+            }
 
             var saleToDelete = await _salesRepository.GetSale(salesId);
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!(await _salesRepository.DeleteSales(saleToDelete)))
             {

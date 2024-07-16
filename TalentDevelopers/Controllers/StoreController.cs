@@ -28,7 +28,9 @@ namespace TalentDevelopers.Controllers
             var stores = _mapper.Map<List<StoreViewModel>>(_storeRepository.GetStores());
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             return Ok(stores);
         }
@@ -41,12 +43,16 @@ namespace TalentDevelopers.Controllers
         public IActionResult GetStore(int storeId)
         {
             if (!_storeRepository.StoreExists(storeId))
+            {
                 return NotFound();
+            }
 
             var store = _mapper.Map<StoreViewModel>(_storeRepository.GetStore(storeId));
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             return Ok(store);
         }
@@ -57,7 +63,9 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> CreateStoreAsync([FromBody] StoreViewModel storeCreate)
         {
             if (storeCreate == null)
+            {
                 return BadRequest(ModelState);
+            }
 
             var stores = await _storeRepository.GetStores();
             var filteredStore = stores
@@ -70,7 +78,9 @@ namespace TalentDevelopers.Controllers
             }
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var storeMap = _mapper.Map<Store>(storeCreate);
 
@@ -90,13 +100,19 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> UpdateStoreAsync(int storeId, [FromBody] StoreViewModel updatedStore)
         {
             if (updatedStore == null)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (storeId != updatedStore.Id)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!_storeRepository.StoreExists(storeId))
+            {
                 return NotFound();
+            }
 
             var storeMap = _mapper.Map<Store>(updatedStore);
 
@@ -116,12 +132,16 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> DeleteStoreAsync(int storeId)
         {
             if (!_storeRepository.StoreExists(storeId))
+            {
                 return NotFound();
+            }
 
             var storeToDelete = await _storeRepository.GetStore(storeId);
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             if (!(await _storeRepository.DeleteStore(storeToDelete)))
             {

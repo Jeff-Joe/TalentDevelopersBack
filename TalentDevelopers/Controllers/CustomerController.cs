@@ -28,7 +28,9 @@ namespace TalentDevelopers.Controllers
             var customers = _mapper.Map<List<CustomerViewModel>>(_customerRepository.GetCustomers());
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            { 
+                return BadRequest(ModelState); 
+            }
 
             return Ok(customers);
         }
@@ -41,12 +43,16 @@ namespace TalentDevelopers.Controllers
         public IActionResult GetCustomer(int customerId)
         {
             if (!_customerRepository.CustomerExists(customerId))
+            {
                 return NotFound();
+            }
 
             var customer = _mapper.Map<CustomerViewModel>(_customerRepository.GetCustomer(customerId));
 
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             return Ok(customer);
         }
@@ -57,7 +63,9 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> CreateCustomerAsync([FromBody] CustomerViewModel customerCreate)
         {
             if (customerCreate == null)
+            {
                 return BadRequest(ModelState);
+            }
 
             var customers = await _customerRepository.GetCustomers();
             var filteredCustomer = customers
@@ -69,8 +77,10 @@ namespace TalentDevelopers.Controllers
                 ModelState.AddModelError("", "Customer already exists");
             }
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var customerMap = _mapper.Map<Customer>(customerCreate);
 
@@ -89,14 +99,20 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateCustomerAsync(int customerId, [FromBody] CustomerViewModel updatedCustomer)
         {
-            if(updatedCustomer == null)
+            if (updatedCustomer == null)
+            {
                 return BadRequest(ModelState);
+            }
 
-            if(customerId != updatedCustomer.Id)
+            if (customerId != updatedCustomer.Id)
+            {
                 return BadRequest(ModelState);
+            }
 
-            if(!_customerRepository.CustomerExists(customerId))
+            if (!_customerRepository.CustomerExists(customerId))
+            {
                 return NotFound();
+            }
 
             var customerMap = _mapper.Map<Customer>(updatedCustomer);
 
@@ -116,12 +132,16 @@ namespace TalentDevelopers.Controllers
         public async Task<IActionResult> DeleteCustomerAsync(int customerId)
         {
             if (!_customerRepository.CustomerExists(customerId))
+            {
                 return NotFound();
+            }
 
             var customerToDelete = await _customerRepository.GetCustomer(customerId);
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             if(!(await _customerRepository.DeleteCustomer(customerToDelete)))
             {
