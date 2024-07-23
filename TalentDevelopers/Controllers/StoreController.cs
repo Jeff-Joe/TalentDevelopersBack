@@ -23,9 +23,9 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Produces(typeof(IEnumerable<StoreViewModel>))]
-        public IActionResult GetStores()
+        public async Task<IActionResult> GetStoresAsync()
         {
-            var stores = _mapper.Map<List<StoreViewModel>>(_storeRepository.GetStores());
+            var stores = _mapper.Map<List<StoreViewModel>>(await _storeRepository.GetStores());
 
             if (!ModelState.IsValid)
             {
@@ -40,14 +40,14 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces(typeof(StoreViewModel))]
-        public IActionResult GetStore(int storeId)
+        public async Task<IActionResult> GetStoreAsync(int storeId)
         {
             if (!_storeRepository.StoreExists(storeId))
             {
                 return NotFound();
             }
 
-            var store = _mapper.Map<StoreViewModel>(_storeRepository.GetStore(storeId));
+            var store = _mapper.Map<StoreViewModel>(await _storeRepository.GetStore(storeId));
 
             if (!ModelState.IsValid)
             {
@@ -72,7 +72,7 @@ namespace TalentDevelopers.Controllers
                 .Where(x => x.Name.Trim().ToUpper() == storeCreate.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
-            if (stores != null)
+            if (filteredStore != null)
             {
                 ModelState.AddModelError("", "Store already exists");
             }

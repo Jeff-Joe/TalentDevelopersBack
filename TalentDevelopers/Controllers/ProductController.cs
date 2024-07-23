@@ -23,9 +23,9 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Produces(typeof(IEnumerable<ProductViewModel>))]
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProductsAsync()
         {
-            var products = _mapper.Map<List<ProductViewModel>>(_productRepository.GetProducts());
+            var products = _mapper.Map<List<ProductViewModel>>(await _productRepository.GetProducts());
 
             if (!ModelState.IsValid)
             {
@@ -40,14 +40,14 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces(typeof(ProductViewModel))]
-        public IActionResult GetProduct(int productId)
+        public async Task<IActionResult> GetProductAsync(int productId)
         {
             if (!_productRepository.ProductExists(productId))
             {
                 return NotFound();
             }
 
-            var product = _mapper.Map<ProductViewModel>(_productRepository.GetProduct(productId));
+            var product = _mapper.Map<ProductViewModel>(await _productRepository.GetProduct(productId));
 
             if (!ModelState.IsValid)
             {

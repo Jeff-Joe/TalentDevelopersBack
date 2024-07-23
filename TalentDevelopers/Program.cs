@@ -27,13 +27,13 @@ builder.Services.AddCors(options =>
 
 // Connect to Azure SQL
 
-var sqlConnection = builder.Configuration["ConnectionStrings:Munson:SqlDb"];
+//var sqlConnection = builder.Configuration["ConnectionStrings:Munson:SqlDb"];
 
-builder.Services.AddSqlServer<TalentDevelopersContext>(sqlConnection, options => options.EnableRetryOnFailure());
+//builder.Services.AddSqlServer<TalentDevelopersContext>(sqlConnection, options => options.EnableRetryOnFailure());
 
-// DbContext
-//builder.Services.AddDbContext<TalentDevelopersContext>(options =>
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("myconn")));
+//DbContext
+builder.Services.AddDbContext<TalentDevelopersContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("myconn")));
 
 // Allow cycles
 //builder.Services.AddControllers().AddJsonOptions(x =>

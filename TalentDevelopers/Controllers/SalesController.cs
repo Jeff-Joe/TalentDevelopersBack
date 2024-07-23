@@ -23,9 +23,9 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Produces(typeof(IEnumerable<SalesViewModelGet>))]
-        public IActionResult GetSales()
+        public async Task<IActionResult> GetSalesAsync()
         {
-            var saless = _mapper.Map<List<SalesViewModelGet>>(_salesRepository.GetSales());
+            var saless = _mapper.Map<List<SalesViewModelGet>>(await _salesRepository.GetSales());
 
             if (!ModelState.IsValid)
             {
@@ -40,14 +40,14 @@ namespace TalentDevelopers.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Produces(typeof(SalesViewModelGet))]
-        public IActionResult GetSale(int salesId)
+        public async Task<IActionResult> GetSaleAsync(int salesId)
         {
             if (!_salesRepository.SalesExists(salesId))
             {
                 return NotFound();
             }
 
-            var sales = _mapper.Map<SalesViewModelGet>(_salesRepository.GetSale(salesId));
+            var sales = _mapper.Map<SalesViewModelGet>(await _salesRepository.GetSale(salesId));
 
             if (!ModelState.IsValid)
             {
