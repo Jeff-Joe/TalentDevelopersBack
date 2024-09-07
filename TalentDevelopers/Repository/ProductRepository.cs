@@ -29,8 +29,13 @@ namespace TalentDevelopers.Repository
             return await Save();
         }
 
-        public async Task<Product> GetProduct(int id)
+        public async Task<Product?> GetProduct(int id)
         {
+            if(!ProductExists(id)) 
+            { 
+                return null; 
+            }
+
             return await _context.Products.Where(x => x.Id == id).SingleOrDefaultAsync();
         }
 

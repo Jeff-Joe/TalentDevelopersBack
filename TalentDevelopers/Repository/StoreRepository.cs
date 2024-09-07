@@ -29,8 +29,12 @@ namespace TalentDevelopers.Repository
             return await Save();
         }
 
-        public async Task<Store> GetStore(int id)
+        public async Task<Store?> GetStore(int id)
         {
+            if(!StoreExists(id))
+            {
+                return null;
+            }
             return await _context.Stores.Where(x => x.Id == id).SingleOrDefaultAsync();
         }
 

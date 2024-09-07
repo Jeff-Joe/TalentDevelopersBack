@@ -30,8 +30,13 @@ namespace TalentDevelopers.Repository
             return await Save();
         }
 
-        public async Task<Sales> GetSale(int id)
+        public async Task<Sales?> GetSale(int id)
         {
+            if(!SalesExists(id))
+            {
+               return null;
+            }
+
             return await _context.SalesTable.Where(x => x.Id == id).SingleOrDefaultAsync();
         }
 

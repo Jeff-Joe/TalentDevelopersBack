@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using TalentDevelopers.Interfaces;
 using TalentDevelopers.Models;
 
@@ -29,8 +30,13 @@ namespace TalentDevelopers.Repository
             return await Save();
         }
 
-        public async Task<Customer> GetCustomer(int id)
+        public async Task<Customer?> GetCustomer(int id)
         {
+            if(!CustomerExists(id))
+            {
+                return null;
+            }
+            
             return await _context.Customers.Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
