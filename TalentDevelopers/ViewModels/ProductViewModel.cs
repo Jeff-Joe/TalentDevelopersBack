@@ -11,6 +11,7 @@ namespace TalentDevelopers.ViewModels
         [MaxLength(255, ErrorMessage = "Maximum length for name is 255 characters")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Please enter a price")]
         public float Price { get; set; }
     }
 }
